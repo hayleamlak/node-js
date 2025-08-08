@@ -1,27 +1,25 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
+const app = express();
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/') {
-    // Read the HTML file and send it
-    const filePath = path.join(__dirname, 'index.html');
+// Middleware to parse URL-encoded bodies (from form submissions)
+app.use(express.urlencoded({ extended: true }));
 
-    fs.readFile(filePath, (err, content) => {
-      if (err) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end('Error loading page');
-      } else {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(content);
-      }
-    });
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('404 Page Not Found');
-  }
+// Serve static files (if needed)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Show the form at GET /
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'form.html'));
 });
 
-server.listen(5000, () => {
-  console.log('Server running at http://localhost:5000');
+// Handle form submission at POST /submit
+app.post('/submit', (req, res) => {
+  const { name, email } = req.body;
+  res.send(`Thank you, ${name}! We received your email as: ${email}`);
+});
+
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });
