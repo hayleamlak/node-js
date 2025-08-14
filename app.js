@@ -1,25 +1,30 @@
-const express = require('express');
-const path = require('path');
-const app = express();
+const http = require("http");
 
-// Middleware to parse URL-encoded bodies (from form submissions)
-app.use(express.urlencoded({ extended: true }));
+const server = http.createServer((req, res) => {
+    if (req.url === "/case1") {
+        // CASE 1: Explicit writeHead + end
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end("Case 1: Using writeHead() and end()");
+    }
 
-// Serve static files (if needed)
-app.use(express.static(path.join(__dirname, 'public')));
+    else if (req.url === "/case2") {
+        // CASE 2: Only end() — Node auto sets headers
+        res.end("Case 2: Only end(), no writeHead()");
+    }
 
-// Show the form at GET /
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'form.html'));
+    else if (req.url === "/case3") {
+        // CASE 3: Setting headers without writeHead()
+        res.setHeader("Content-Type", "application/json");
+        res.statusCode = 201; // Created
+        res.end(JSON.stringify({ message: "Case 3: Custom headers via setHeader()" }));
+    }
+
+    else {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Not Found");
+    }
 });
 
-// Handle form submission at POST /submit
-app.post('/submit', (req, res) => {
-  const { name, email } = req.body;
-  res.send(`Thank you, ${name}! We received your email as: ${email}`);
-});
-
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+server.listen(3000, () => {
+    console.log("Server running at http://localhost:3000");
 });
