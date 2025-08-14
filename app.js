@@ -12,7 +12,7 @@ const server = http.createServer((req, res) => {
         res.end("Case 2: Only end(), no writeHead()");
     }
 
-    else if (req.url === "/case3") {
+
         // CASE 3: Setting headers without writeHead()
         res.setHeader("Content-Type", "text/plain");
         res.statusCode = 201; // Created
