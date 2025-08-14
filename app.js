@@ -14,13 +14,13 @@ const server = http.createServer((req, res) => {
 
     else if (req.url === "/case3") {
         // CASE 3: Setting headers without writeHead()
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "text/plain");
         res.statusCode = 201; // Created
         res.end(JSON.stringify({ message: "Case 3: Custom headers via setHeader()" }));
     }
 
     else {
-        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.writeHead(404, { "Content-Type":"text/plain"});
         res.end("Not Found");
     }
 });
